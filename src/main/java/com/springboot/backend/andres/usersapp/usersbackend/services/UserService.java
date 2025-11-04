@@ -9,8 +9,8 @@ import com.springboot.backend.andres.usersapp.usersbackend.entities.User;
 
 public interface UserService {
     List<User> findAll();
-    Optional<User> findById(@NonNull Long id);
-    User save(@NonNull User user);
+    Optional<User> findById(Long id);
+    User save( User user);
     void deleteById(@NonNull Long id);
 
 }

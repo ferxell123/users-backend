@@ -25,13 +25,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<User> findById(@NonNull Long id) {
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
     @Override
     @Transactional
-    public User save(@NonNull User user) {
+    public User save(User user) {
         return userRepository.save(user);
     }
 
