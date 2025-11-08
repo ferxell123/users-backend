@@ -6,18 +6,22 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.backend.andres.usersapp.usersbackend.entities.User;
 import com.springboot.backend.andres.usersapp.usersbackend.services.UserService;
 
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -31,7 +35,7 @@ public class UserController {
         return userService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/findUserById/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
         Optional<User> user = userService.findById(id);
         if (user.isPresent()) {
@@ -47,7 +51,7 @@ public class UserController {
         if (user.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(user.orElseThrow());
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "User not found"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "User not found with id: " + id));
 
     }
 
@@ -56,9 +60,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<User> update(@RequestBody User user) {
-        Optional<User> existingUser = userService.findById(user.getId());
+    @PutMapping("/{id}")
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
+        Optional<User> existingUser = userService.findById(id);
         if (existingUser.isPresent()) {
             User updatedUser = existingUser.get();
             updatedUser.setName(user.getName());
@@ -72,8 +76,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+                Optional<User> existingUser = userService.findById(id);
+        if (existingUser.isPresent()) {
         userService.deleteById(id);
+        return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }
