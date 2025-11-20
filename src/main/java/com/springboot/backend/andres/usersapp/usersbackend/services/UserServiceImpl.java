@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User save(User user) {
-        if (user.getId() == 0L) {
+        if (user.getId() == null || user.getId() == 0L) {
             user.setId(null);
         }
             return userRepository.save(user);
