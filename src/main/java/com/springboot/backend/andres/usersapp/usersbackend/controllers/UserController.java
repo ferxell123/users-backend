@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.backend.andres.usersapp.usersbackend.entities.User;
+import com.springboot.backend.andres.usersapp.usersbackend.models.UserRequest;
 import com.springboot.backend.andres.usersapp.usersbackend.pageable.PageResponse;
 import com.springboot.backend.andres.usersapp.usersbackend.services.UserService;
 
@@ -50,7 +51,7 @@ public class UserController {
     }
 
     @GetMapping("/findUserById/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
+    public ResponseEntity<User> findById(@PathVariable Integer id) {
         Optional<User> user = userService.findById(id);
         if (user.isPresent()) {
             return ResponseEntity.ok(user.orElseThrow());
@@ -60,8 +61,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findUserById(@PathVariable Long id) {
-        Optional<User> user = userService.findById(id);
+    public ResponseEntity<?> findUserById(@PathVariable Integer id) {
+             Optional<User> user = userService.findById(id);
         if (user.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(user.orElseThrow());
         }
@@ -79,25 +80,19 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody UserRequest user, BindingResult result, @PathVariable Integer id) {
         if (result.hasErrors()) {
             return getErrors(result);
         }
-        Optional<User> existingUser = userService.findById(id);
-        if (existingUser.isPresent()) {
-            User updatedUser = existingUser.get();
-            updatedUser.setName(user.getName());
-            updatedUser.setLastname(user.getLastname());
-            updatedUser.setEmail(user.getEmail());
-            updatedUser.setUsername(user.getUsername());
-            updatedUser.setPassword(user.getPassword());
-            return ResponseEntity.status(HttpStatus.OK).body(userService.save(updatedUser));
+        Optional<User> userOptional = userService.update(user, id);
+        if (userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(userOptional.orElseThrow());
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         Optional<User> existingUser = userService.findById(id);
         if (existingUser.isPresent()) {
             userService.deleteById(id);
