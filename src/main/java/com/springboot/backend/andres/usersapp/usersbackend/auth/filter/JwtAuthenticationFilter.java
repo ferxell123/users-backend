@@ -15,23 +15,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.backend.andres.usersapp.usersbackend.entities.User;
-
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import static com.springboot.backend.andres.usersapp.usersbackend.auth.TokenJwtConfig.SECRET_KEY;
-
 import io.jsonwebtoken.Claims;
-
-
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -72,10 +66,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .getPrincipal();
         String username = user.getUsername();
         Collection<? extends GrantedAuthority> roles= authResult.getAuthorities();
+        boolean isAdmin = roles.stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
         Claims claims = Jwts
         .claims()
         .add("authorities", new ObjectMapper().writeValueAsString(roles))
         .add("username",username)
+        .add("isAdmin",isAdmin)
         .build();
         String jwt = Jwts.builder().subject(username)
         .claims(claims)
