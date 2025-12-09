@@ -15,7 +15,8 @@ public interface UserService {
     PageResponse<User> findAll(Pageable pageable);
     Optional<User> findById(Integer id);
     User save( User user);
-    void deleteById(@NonNull Integer id);
     Optional<User> update(UserRequest user, Integer id);
+    void deleteById(@NonNull Integer id);
+    //Integer deleteById(@NonNull Integer id);
 
 }

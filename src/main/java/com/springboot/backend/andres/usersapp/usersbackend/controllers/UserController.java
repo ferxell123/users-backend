@@ -28,7 +28,7 @@ import com.springboot.backend.andres.usersapp.usersbackend.services.UserService;
 
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -62,7 +62,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable Integer id) {
-             Optional<User> user = userService.findById(id);
+        Optional<User> user = userService.findById(id);
         if (user.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(user.orElseThrow());
         }
@@ -80,7 +80,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody UserRequest user, BindingResult result, @PathVariable Integer id) {
+    public ResponseEntity<?> update(@Valid @RequestBody UserRequest user, BindingResult result,
+            @PathVariable Integer id) {
         if (result.hasErrors()) {
             return getErrors(result);
         }
@@ -90,9 +91,19 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+    /*
+     * @DeleteMapping("/{id}")
+     * public ResponseEntity<?> deleteById(@PathVariable Integer id) {
+     * Optional<User> existingUser = userService.findById(id);
+     * if (existingUser.isPresent()) {
+     * return ResponseEntity.ok(userService.deleteById(id));
+     * }
+     * return ResponseEntity.notFound().build();
+     * }
+     */
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteById(@PathVariable Integer id) {
         Optional<User> existingUser = userService.findById(id);
         if (existingUser.isPresent()) {
             userService.deleteById(id);

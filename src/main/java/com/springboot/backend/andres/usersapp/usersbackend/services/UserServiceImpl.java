@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User save(User user) {
-        if (user.getId() == null || user.getId() == 0L) {
+        if (user.getId() == null || user.getId() == 0) {
             user.setId(null);
         }
         user.setRoles( getRoles(user));
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
             updatedUser.setEmail(user.getEmail());
             updatedUser.setUsername(user.getUsername());
             
-            updatedUser.setRoles(getRoles(user));
+            //updatedUser.setRoles(getRoles(user));
             userRepository.save(updatedUser);
             return Optional.of(updatedUser);
         }
