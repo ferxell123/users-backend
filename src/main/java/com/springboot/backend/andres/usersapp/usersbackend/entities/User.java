@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.springboot.backend.andres.usersapp.usersbackend.models.IUser;
 
 import jakarta.persistence.Entity;
@@ -49,7 +48,7 @@ public class User implements IUser {
     private String password;
 
     @Transient
-    @JsonProperty(access =JsonProperty.Access.WRITE_ONLY)
+    //@JsonProperty(access =JsonProperty.Access.WRITE_ONLY)
     private boolean admin;
 
     @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})

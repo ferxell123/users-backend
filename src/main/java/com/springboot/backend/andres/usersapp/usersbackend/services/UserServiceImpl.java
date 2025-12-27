@@ -36,13 +36,25 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<User> findAll() {
-        return (List<User>) userRepository.findAll();
+        List<User> users = (List<User>) userRepository.findAll();
+        return users.stream().map(user -> {
+         boolean isAdmin = user.getRoles().stream()
+                 .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+         user.setAdmin(isAdmin);
+         return user;
+        }).toList();
+        
     }
 
     @Transactional(readOnly = true)
     @Override
     public PageResponse<User> findAll(Pageable pageable) {
-        Page<User> page = userRepository.findAll(pageable);
+        Page<User> page = userRepository.findAll(pageable).map( user -> {
+            boolean isAdmin = user.getRoles().stream()
+                    .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+            user.setAdmin(isAdmin);
+            return user;
+        });
         return PageResponse.of(page);
     }
 
@@ -76,7 +88,7 @@ public class UserServiceImpl implements UserService {
             updatedUser.setEmail(user.getEmail());
             updatedUser.setUsername(user.getUsername());
             
-            //updatedUser.setRoles(getRoles(user));
+            updatedUser.setRoles(getRoles(user));
             userRepository.save(updatedUser);
             return Optional.of(updatedUser);
         }
